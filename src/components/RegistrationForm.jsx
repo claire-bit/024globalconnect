@@ -12,7 +12,7 @@ const RegistrationForm = () => {
         <div className="p-8">
           <div className="flex flex-col items-center mb-8">
             <div className="w-20 h-20 bg-blue-deep text-white rounded-full flex items-center justify-center font-bold text-2xl shadow-md">
-              AATI
+              024GLOBALCONNECT
             </div>
             <h2 className="text-2xl font-semibold mt-4 text-blue-night">REGISTRATION DETAILS</h2>
           </div>

@@ -26,7 +26,7 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Company</h3>
           <ul>
-            <li><a href="#" className="hover:text-white text-gray-400">About Us</a></li>
+            <li><a href="/aboutus" className="hover:text-white text-gray-400">About Us</a></li>
             <li><a href="#" className="hover:text-white text-gray-400">Our Team</a></li>
             <li><a href="#" className="hover:text-white text-gray-400">Partners</a></li>
             <li><a href="#" className="hover:text-white text-gray-400">Careers</a></li>
@@ -36,7 +36,7 @@ const Footer = () => {
           <h3 className="text-lg font-semibold mb-4">Contact</h3>
           <ul>
             <li><a href="#" className="hover:text-white text-gray-400">Support Center</a></li>
-            <li><a href="#" className="hover:text-white text-gray-400">Contact Us</a></li>
+            <li><a href="/contact" className="hover:text-white text-gray-400">Contact Us</a></li>
             <li><a href="#" className="hover:text-white text-gray-400">Regional Offices</a></li>
             <li><a href="#" className="hover:text-white text-gray-400">Feedback</a></li>
           </ul>

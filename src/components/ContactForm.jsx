@@ -93,7 +93,7 @@ const ContactForm = () => {
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Call Us</h4>
                   <a href="tel:+254747515336" className="text-blue-600 hover:text-purple-500 transition-colors">
-                    +254 747 515 336
+                    +254 711 917 376
                   </a>
                 </div>
 

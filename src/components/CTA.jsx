@@ -7,8 +7,8 @@ const CTA = () => {
         <h2 className="text-3xl font-bold mb-4">Ready to Join the Digital Revolution?</h2>
         <p className="mb-8 max-w-xl mx-auto">Become part of our growing community and access opportunities through our platform.</p>
         <div className="flex justify-center gap-4">
-          <a href="#" className="btn bg-white text-blue-700">Login to Your Account</a>
-          <a href="#" className="btn btn-outline border-white text-white">Create New Account</a>
+          <a href="/login" className="btn bg-white text-blue-700">Login to Your Account</a>
+          <a href="/register" className="btn btn-outline border-white text-white">Create New Account</a>
         </div>
       </div>
     </section>
