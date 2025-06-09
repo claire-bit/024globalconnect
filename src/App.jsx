@@ -12,7 +12,7 @@ import BlogForm from './components/BlogForm';
 function App() {
   return (
     <div>
-      {/* Navigation bar */}
+      /* Navigation bar */
       <nav className="bg-blue-night text-white p-4 flex gap-6">
         <Link to="/" className="hover:text-blue-light transition-colors">Home</Link>
         <Link to="/login" className="hover:text-blue-light transition-colors">Login</Link>
