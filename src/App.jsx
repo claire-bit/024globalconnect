@@ -8,6 +8,8 @@ import ContactForm from './components/login/ContactForm';
 import AboutUs from './pages/AboutUs';
 import BlogForm from './components/login/BlogForm';
 import AffiliateSignup from './components/affiliate/AffiliateSignup'; // ✅ New import
+import AffiliateLogin from './components/affiliate/AffiliateLogin';
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blog" element={<BlogForm />} />
         <Route path="/affiliate-signup" element={<AffiliateSignup />} /> {/* ✅ New route */}
+        <Route path="/affiliate-login" element={<AffiliateLogin />} />
       </Routes>
     </div>
   );
