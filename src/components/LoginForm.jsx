@@ -20,7 +20,6 @@ export default function LoginPage() {
               required
             />
           </div>
-
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
@@ -55,10 +54,14 @@ export default function LoginPage() {
         <div className="text-center text-sm text-gray-600">
           Don’t have an account?{' '}
           <a href="#" className="text-blue-600 hover:underline font-medium">
+        </div>
+        <div className="text-center text-sm text-gray-600">
+          Don't have an account?{' '}
+          <a href="/register" className="text-blue-600 hover:underline font-medium">
             Register
           </a>
         </div>
       </div>
     </div>
-  );
-}
+  )
+};
