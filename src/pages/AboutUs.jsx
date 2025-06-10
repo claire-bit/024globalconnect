@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Globe, Users, TrendingUp, Shield, Award, Target, ArrowRight, Check } from 'lucide-react';
 
 const AboutUs = () => {
@@ -133,8 +134,7 @@ const AboutUs = () => {
                     <span className="font-semibold">Our Mission</span>
                   </div>
                   <p className="text-blue-100">
-                    To democratize global commerce by creating meaningful connections between 
-                    brands and audiences, powered by cutting-edge technology and human insight.
+                    To leverage on ICT and other emerging technologies in providing our clients with the best solutions around employment opportunities, access to financial services and markets.
                   </p>
                 </div>
               </div>
@@ -234,10 +234,13 @@ const AboutUs = () => {
             your audience, we're here to help you succeed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl hover:bg-blue-50 transition-all duration-200 flex items-center justify-center group">
+            <Link 
+              to="/affiliate-signup" 
+              className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl hover:bg-blue-50 transition-all duration-200 flex items-center justify-center group text-decoration-none"
+            >
               Become an Affiliate
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
             <button className="border-2 border-white text-white font-bold py-4 px-8 rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-200 flex items-center justify-center group">
               Partner with Us
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

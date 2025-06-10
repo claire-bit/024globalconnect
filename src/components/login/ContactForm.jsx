@@ -1,4 +1,21 @@
 import React, { useState } from 'react';
+import { 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Clock, 
+  Globe, 
+  User, 
+  MessageSquare, 
+  Send, 
+  CheckCircle, 
+  XCircle, 
+  ArrowUp,
+  Building,
+  Rocket,
+  Users,
+  Lightbulb
+} from 'lucide-react';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -44,19 +61,20 @@ const ContactForm = () => {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="text-2xl font-bold text-blue-700">
-                🌐 024 Global Connect
+              <div className="text-2xl font-bold text-blue-700 flex items-center space-x-2">
+                <Globe className="w-8 h-8" />
+                <span>024 Global Connect</span>
               </div>
             </div>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-sm">
               <div className="flex items-center space-x-2">
-                <span className="text-blue-600">📞</span>
-                <a href="tel:+254747515336" className="text-gray-600 hover:text-blue-600">
+                <Phone className="w-4 h-4 text-blue-600" />
+                <a href="tel:+254711917376" className="text-gray-600 hover:text-blue-600">
                   +254 711 917 376
                 </a>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-blue-600">✉️</span>
+                <Mail className="w-4 h-4 text-blue-600" />
                 <a href="mailto:info@024globalconnect.com" className="text-gray-600 hover:text-blue-600">
                   info@024globalconnect.com
                 </a>
@@ -73,14 +91,15 @@ const ContactForm = () => {
           {/* Contact Information */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-xl p-8 h-fit">
-              <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
-                Connect With Us
+              <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center flex items-center justify-center space-x-2">
+                <MessageSquare className="w-6 h-6 text-blue-600" />
+                <span>Connect With Us</span>
               </h2>
               
               <div className="space-y-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-blue-600">🏢</span>
+                    <Building className="w-8 h-8 text-blue-600" />
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Our Office</h4>
                   <p className="text-gray-600">Nairobi, Kenya</p>
@@ -89,17 +108,17 @@ const ContactForm = () => {
 
                 <div className="text-center">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-green-600">📞</span>
+                    <Phone className="w-8 h-8 text-green-600" />
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Call Us</h4>
-                  <a href="tel:+254747515336" className="text-blue-600 hover:text-purple-500 transition-colors">
+                  <a href="tel:+254711917376" className="text-blue-600 hover:text-purple-500 transition-colors">
                     +254 711 917 376
                   </a>
                 </div>
 
                 <div className="text-center">
                   <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-purple-600">✉️</span>
+                    <Mail className="w-8 h-8 text-purple-600" />
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Email Us</h4>
                   <a href="mailto:info@024globalconnect.com" className="text-blue-600 hover:text-purple-500 transition-colors break-all">
@@ -109,7 +128,7 @@ const ContactForm = () => {
 
                 <div className="text-center">
                   <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-yellow-600">🕒</span>
+                    <Clock className="w-8 h-8 text-yellow-600" />
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Business Hours</h4>
                   <p className="text-gray-600">Mon - Fri: 8AM - 6PM</p>
@@ -119,7 +138,7 @@ const ContactForm = () => {
 
                 <div className="text-center">
                   <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl text-red-600">🌍</span>
+                    <Globe className="w-8 h-8 text-red-600" />
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Global Reach</h4>
                   <p className="text-gray-600">Connecting businesses</p>
@@ -142,11 +161,12 @@ const ContactForm = () => {
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>Full Name *</span>
                     </label>
                     <input
                       type="text"
@@ -161,8 +181,9 @@ const ContactForm = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+                      <Mail className="w-4 h-4" />
+                      <span>Email Address *</span>
                     </label>
                     <input
                       type="email"
@@ -179,8 +200,9 @@ const ContactForm = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+                      <Phone className="w-4 h-4" />
+                      <span>Phone Number</span>
                     </label>
                     <input
                       type="tel"
@@ -218,8 +240,9 @@ const ContactForm = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Message *</span>
                   </label>
                   <textarea
                     id="message"
@@ -235,22 +258,24 @@ const ContactForm = () => {
 
                 <div className="flex justify-center">
                   <button
-                    type="button"
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={isSubmitting}
-                    className={`px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 ${
+                    className={`px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                       isSubmitting
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                         : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
                     }`}
                   >
                     {isSubmitting ? (
-                      <div className="flex items-center space-x-2">
+                      <>
                         <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
                         <span>Sending...</span>
-                      </div>
+                      </>
                     ) : (
-                      'Send Message'
+                      <>
+                        <Send className="w-5 h-5" />
+                        <span>Send Message</span>
+                      </>
                     )}
                   </button>
                 </div>
@@ -258,20 +283,22 @@ const ContactForm = () => {
                 {/* Status Messages */}
                 {submitStatus === 'success' && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                    <p className="text-green-800 font-medium">
-                      ✅ Thank you! Your message has been sent successfully. We'll connect with you soon.
-                    </p>
+                    <div className="flex items-center justify-center space-x-2 text-green-800 font-medium">
+                      <CheckCircle className="w-5 h-5" />
+                      <p>Thank you! Your message has been sent successfully. We'll connect with you soon.</p>
+                    </div>
                   </div>
                 )}
 
                 {submitStatus === 'error' && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                    <p className="text-red-800 font-medium">
-                      ❌ Sorry, there was an error sending your message. Please try again.
-                    </p>
+                    <div className="flex items-center justify-center space-x-2 text-red-800 font-medium">
+                      <XCircle className="w-5 h-5" />
+                      <p>Sorry, there was an error sending your message. Please try again.</p>
+                    </div>
                   </div>
                 )}
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -284,14 +311,14 @@ const ContactForm = () => {
         rel="noopener noreferrer"
         className="fixed bottom-20 left-5 bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 z-50"
       >
-        <span className="text-xl">💬</span>
+        <MessageSquare className="w-6 h-6" />
       </a>
 
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="fixed bottom-20 right-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 z-50"
       >
-        <span className="text-xl">↑</span>
+        <ArrowUp className="w-6 h-6" />
       </button>
 
       {/* Additional Features Section */}
@@ -305,7 +332,7 @@ const ContactForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚀</span>
+                <Rocket className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Global Reach</h3>
               <p className="opacity-90">Connect with markets and opportunities worldwide</p>
@@ -313,7 +340,7 @@ const ContactForm = () => {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
+                <Users className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Trusted Partnerships</h3>
               <p className="opacity-90">Build lasting relationships with verified partners</p>
@@ -321,7 +348,7 @@ const ContactForm = () => {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💡</span>
+                <Lightbulb className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Innovation</h3>
               <p className="opacity-90">Cutting-edge solutions for modern business challenges</p>

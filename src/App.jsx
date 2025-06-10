@@ -1,13 +1,13 @@
-// src/App.jsx
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
 import Home from './pages/Home';
-import LoginForm from './components/LoginForm';
-import RegistrationForm from './components/RegistrationForm';
-import ContactForm from './components/ContactForm';
+import LoginForm from './components/login/LoginForm';
+import RegistrationForm from './components/login/RegistrationForm';
+import ContactForm from './components/login/ContactForm';
 import AboutUs from './pages/AboutUs';
-import BlogForm from './components/BlogForm';
+import BlogForm from './components/login/BlogForm';
+import AffiliateSignup from './components/affiliate/AffiliateSignup'; // ✅ New import
 
 function App() {
   return (
@@ -29,6 +29,7 @@ function App() {
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blog" element={<BlogForm />} />
+        <Route path="/affiliate-signup" element={<AffiliateSignup />} /> {/* ✅ New route */}
       </Routes>
     </div>
   );

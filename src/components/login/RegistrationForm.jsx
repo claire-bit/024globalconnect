@@ -1,4 +1,5 @@
 import React from 'react';
+import { User, KeyRound, Lock } from 'lucide-react';
 
 const RegistrationForm = () => {
   return (
@@ -21,52 +22,67 @@ const RegistrationForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium text-blue-night mb-1">First Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter first name"
-                  className="w-full px-4 py-2 border border-blue-bright rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-bright"
-                  required
-                />
+                <div className="flex items-center border border-blue-bright rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-bright">
+                  <User className="w-5 h-5 text-blue-deep mr-2" />
+                  <input
+                    type="text"
+                    placeholder="Enter first name"
+                    className="w-full focus:outline-none"
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-blue-night mb-1">Last Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter last name"
-                  className="w-full px-4 py-2 border border-blue-bright rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-bright"
-                  required
-                />
+                <div className="flex items-center border border-blue-bright rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-bright">
+                  <User className="w-5 h-5 text-blue-deep mr-2" />
+                  <input
+                    type="text"
+                    placeholder="Enter last name"
+                    className="w-full focus:outline-none"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-blue-night mb-1">Username</label>
-              <input
-                type="text"
-                placeholder="Choose username"
-                className="w-full px-4 py-2 border border-blue-bright rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-bright"
-                required
-              />
+              <div className="flex items-center border border-blue-bright rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-bright">
+                <User className="w-5 h-5 text-blue-deep mr-2" />
+                <input
+                  type="text"
+                  placeholder="Choose username"
+                  className="w-full focus:outline-none"
+                  required
+                />
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-blue-night mb-1">Password</label>
-              <input
-                type="password"
-                placeholder="Create password"
-                className="w-full px-4 py-2 border border-blue-bright rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-bright"
-                required
-              />
+              <div className="flex items-center border border-blue-bright rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-bright">
+                <KeyRound className="w-5 h-5 text-blue-deep mr-2" />
+                <input
+                  type="password"
+                  placeholder="Create password"
+                  className="w-full focus:outline-none"
+                  required
+                />
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-blue-night mb-1">Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                className="w-full px-4 py-2 border border-blue-bright rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-bright"
-                required
-              />
+              <div className="flex items-center border border-blue-bright rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-bright">
+                <Lock className="w-5 h-5 text-blue-deep mr-2" />
+                <input
+                  type="password"
+                  placeholder="Confirm password"
+                  className="w-full focus:outline-none"
+                  required
+                />
+              </div>
             </div>
 
             <div className="flex items-start">
