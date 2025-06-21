@@ -14,8 +14,12 @@ import {
   Building,
   Rocket,
   Users,
-  Lightbulb
+  Lightbulb,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
+import { handleApiError } from '../../api/utils/apiutils';
+import logo from '../../assets/024global_logo_200x200.png';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +30,7 @@ const ContactForm = () => {
     message: ''
   });
   
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
 
@@ -35,19 +40,102 @@ const ContactForm = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear specific field error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+    
+    // Clear general error and success status
+    if (errors.general || submitStatus) {
+      setErrors(prev => ({
+        ...prev,
+        general: ''
+      }));
+      setSubmitStatus('');
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Full name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+    
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    // Phone validation (optional but must be valid if provided)
+    if (formData.phone.trim() && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+    
+    // Subject validation
+    if (!formData.subject) {
+      newErrors.subject = 'Please select a subject';
+    }
+    
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+    
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({});
     setSubmitStatus('');
 
-    // Simulate form submission
+    // Client-side validation
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
+      // TODO: Replace with actual API call
+      // const response = await contactAPI.submitForm({
+      //   name: formData.name.trim(),
+      //   email: formData.email.trim(),
+      //   phone: formData.phone.trim(),
+      //   subject: formData.subject,
+      //   message: formData.message.trim()
+      // });
+      
+      // Simulate API call for now
       await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    } catch (error) {
+      
+      // Reset form on success
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+      
+    } catch (err) {
+      setErrors({ general: handleApiError(err) });
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -61,22 +149,28 @@ const ContactForm = () => {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="text-2xl font-bold text-blue-700 flex items-center space-x-2">
-                <Globe className="w-8 h-8" />
-                <span>024 Global Connect</span>
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-white shadow-md">
+                <img 
+                  src={logo} 
+                  alt="024 Global Connect Logo" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="text-2xl font-bold text-blue-700">
+                024 Global Connect
               </div>
             </div>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-sm">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-blue-600" />
-                <a href="tel:+254711917376" className="text-gray-600 hover:text-blue-600">
+                <a href="tel:+254711917376" className="text-gray-600 hover:text-blue-600 transition-colors">
                   +254 711 917 376
                 </a>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-blue-600" />
-                <a href="mailto:info@024globalconnect.com" className="text-gray-600 hover:text-blue-600">
-                  info@024globalconnect.com
+                <a href="mailto:info@024globalconnect.com" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  024globalconnect@gmail.com
                 </a>
               </div>
             </div>
@@ -103,7 +197,7 @@ const ContactForm = () => {
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Our Office</h4>
                   <p className="text-gray-600">Nairobi, Kenya</p>
-                  <p className="text-gray-600">Global Solutions Hub</p>
+                  <p className="text-gray-600">024GlobalConnect</p>
                 </div>
 
                 <div className="text-center">
@@ -122,7 +216,7 @@ const ContactForm = () => {
                   </div>
                   <h4 className="font-semibold text-gray-800 mb-2">Email Us</h4>
                   <a href="mailto:info@024globalconnect.com" className="text-blue-600 hover:text-purple-500 transition-colors break-all">
-                    info@024globalconnect.com
+                    024globalconnect@gmail.com
                   </a>
                 </div>
 
@@ -161,6 +255,26 @@ const ContactForm = () => {
                 </p>
               </div>
 
+              {/* Success Message */}
+              {submitStatus === 'success' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center space-x-2 text-green-800">
+                    <CheckCircle className="w-5 h-5" />
+                    <p className="text-sm font-medium">Thank you! Your message has been sent successfully. We'll connect with you soon.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* General Error */}
+              {errors.general && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center space-x-2 text-red-800">
+                    <AlertCircle className="w-5 h-5" />
+                    <p className="text-sm">{errors.general}</p>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -174,10 +288,13 @@ const ContactForm = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your full name"
+                      disabled={isSubmitting}
                     />
+                    {errors.name && (
+                      <p className="text-red-600 text-xs mt-1">{errors.name}</p>
+                    )}
                   </div>
 
                   <div>
@@ -191,10 +308,13 @@ const ContactForm = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your email"
+                      disabled={isSubmitting}
                     />
+                    {errors.email && (
+                      <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+                    )}
                   </div>
                 </div>
 
@@ -212,7 +332,11 @@ const ContactForm = () => {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your phone number"
+                      disabled={isSubmitting}
                     />
+                    {errors.phone && (
+                      <p className="text-red-600 text-xs mt-1">{errors.phone}</p>
+                    )}
                   </div>
 
                   <div>
@@ -224,8 +348,8 @@ const ContactForm = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      disabled={isSubmitting}
                     >
                       <option value="">Select a subject</option>
                       <option value="business-inquiry">Business Inquiry</option>
@@ -236,6 +360,9 @@ const ContactForm = () => {
                       <option value="support">Support</option>
                       <option value="other">Other</option>
                     </select>
+                    {errors.subject && (
+                      <p className="text-red-600 text-xs mt-1">{errors.subject}</p>
+                    )}
                   </div>
                 </div>
 
@@ -249,11 +376,14 @@ const ContactForm = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    required
                     rows={6}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-vertical"
                     placeholder="Tell us about your business goals, challenges, or how we can help you connect globally..."
+                    disabled={isSubmitting}
                   />
+                  {errors.message && (
+                    <p className="text-red-600 text-xs mt-1">{errors.message}</p>
+                  )}
                 </div>
 
                 <div className="flex justify-center">
@@ -268,7 +398,7 @@ const ContactForm = () => {
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                        <Loader2 className="w-5 h-5 animate-spin" />
                         <span>Sending...</span>
                       </>
                     ) : (
@@ -279,25 +409,6 @@ const ContactForm = () => {
                     )}
                   </button>
                 </div>
-
-                {/* Status Messages */}
-                {submitStatus === 'success' && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                    <div className="flex items-center justify-center space-x-2 text-green-800 font-medium">
-                      <CheckCircle className="w-5 h-5" />
-                      <p>Thank you! Your message has been sent successfully. We'll connect with you soon.</p>
-                    </div>
-                  </div>
-                )}
-
-                {submitStatus === 'error' && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                    <div className="flex items-center justify-center space-x-2 text-red-800 font-medium">
-                      <XCircle className="w-5 h-5" />
-                      <p>Sorry, there was an error sending your message. Please try again.</p>
-                    </div>
-                  </div>
-                )}
               </form>
             </div>
           </div>
@@ -310,6 +421,7 @@ const ContactForm = () => {
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-20 left-5 bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 z-50"
+        aria-label="Contact us on WhatsApp"
       >
         <MessageSquare className="w-6 h-6" />
       </a>
@@ -317,6 +429,7 @@ const ContactForm = () => {
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="fixed bottom-20 right-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 z-50"
+        aria-label="Scroll to top"
       >
         <ArrowUp className="w-6 h-6" />
       </button>
@@ -332,7 +445,7 @@ const ContactForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Rocket className="w-8 h-8" />
+                <Rocket className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Global Reach</h3>
               <p className="opacity-90">Connect with markets and opportunities worldwide</p>
@@ -340,7 +453,7 @@ const ContactForm = () => {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8" />
+                <Users className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Trusted Partnerships</h3>
               <p className="opacity-90">Build lasting relationships with verified partners</p>
@@ -348,7 +461,7 @@ const ContactForm = () => {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lightbulb className="w-8 h-8" />
+                <Lightbulb className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Innovation</h3>
               <p className="opacity-90">Cutting-edge solutions for modern business challenges</p>

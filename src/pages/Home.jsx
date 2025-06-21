@@ -1,18 +1,16 @@
 // src/pages/Home.jsx
 import React from 'react';
 import Header from '../components/login/Header';
-import Hero from '../components/login/Hero';
 import MissionVision from '../components/login/MissionVision';
-import CTA from '../components/login/CTA';
 import Footer from '../components/login/Footer';
+import HeroWithCTA from '../components/login/HeroWithCTA';
 
 const Home = () => {
   return (
     <>
       <Header />
-      <Hero />
+      <HeroWithCTA />
       <MissionVision />
-      <CTA />
       <Footer />
     </>
   );

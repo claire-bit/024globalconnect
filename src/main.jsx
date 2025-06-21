@@ -6,10 +6,15 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './index.css';
 
+// 👇 Import the AuthProvider
+import { AuthProvider } from './hooks/useAuth';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>  {/* 👈 Wrap App here */}
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );

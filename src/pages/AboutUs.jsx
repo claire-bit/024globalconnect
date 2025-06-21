@@ -207,17 +207,23 @@ const AboutUs = () => {
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center group hover:-translate-y-2">
                 <div className="relative mb-6">
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full mx-auto object-cover ring-4 ring-blue-100 group-hover:ring-blue-200 transition-all"
-                  />
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name || 'Team member'}
+                      className="w-24 h-24 rounded-full mx-auto object-cover ring-4 ring-blue-100 group-hover:ring-blue-200 transition-all"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full mx-auto bg-gray-200 flex items-center justify-center ring-4 ring-blue-100 group-hover:ring-blue-200 text-gray-500">
+                      N/A
+                    </div>
+                  )}
                   <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-indigo-600 w-8 h-8 rounded-full flex items-center justify-center">
                     <Check className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                <p className="text-blue-600 font-semibold mb-4">{member.role}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name || 'Unnamed'}</h3>
+                <p className="text-blue-600 font-semibold mb-4">{member.role || 'Unknown Role'}</p>
                 <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
               </div>
             ))}
@@ -228,7 +234,7 @@ const AboutUs = () => {
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Join Our Global Network?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Join 024GlobalConnect?</h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             Whether you're a brand looking to expand your reach or an affiliate ready to monetize 
             your audience, we're here to help you succeed.
@@ -238,14 +244,18 @@ const AboutUs = () => {
               to="/affiliate-signup" 
               className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl hover:bg-blue-50 transition-all duration-200 flex items-center justify-center group text-decoration-none"
             >
-              Become an Affiliate
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <button className="border-2 border-white text-white font-bold py-4 px-8 rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-200 flex items-center justify-center group">
-              Partner with Us
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
+             Become an Affiliate
+    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+  </Link>
+
+  <Link 
+    to="/affiliate-partner" 
+    className="border-2 border-white text-white font-bold py-4 px-8 rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-200 flex items-center justify-center group"
+  >
+    Partner with Us
+    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+  </Link>
+</div>
         </div>
       </section>
     </div>
