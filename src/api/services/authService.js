@@ -9,8 +9,11 @@ export const authService = {
   login: async ({ username, password }) => {
     try {
       const payload = { username, password };
+      console.log('🔐 Sending login payload:', payload);
 
-      const response = await apiClient.post(API_ENDPOINTS.LOGIN, payload);
+
+      // JWT login using /api/token/
+      const response = await apiClient.post(API_ENDPOINTS.TOKEN_OBTAIN, payload);
 
       if (response.data.access) {
         localStorage.setItem('authToken', response.data.access);
@@ -37,20 +40,18 @@ export const authService = {
         last_name: userData.last_name,
         username: userData.username,
         email: userData.email,
-        password1: userData.password1,
-        password2: userData.password2,
+        password: userData.password,
+        confirm_password: userData.confirm_password,
+        password1: userData.password1 || userData.password,
+        password2: userData.password2 || userData.confirm_password,
       };
 
-      console.log("📤 Payload being sent to backend:", registrationPayload);
-
-      const response = await axios.post(`${API_BASE_URL}/accounts/register/`, registrationPayload, {
+      const response = await axios.post(`${API_BASE_URL}/users/register/`, registrationPayload, {
         timeout: 30000,
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
-
-      console.log('✅ Registration successful:', response.data);
 
       if (response.data.access || response.data.access_token) {
         const token = response.data.access || response.data.access_token;
@@ -71,25 +72,16 @@ export const authService = {
 
       return {
         success: true,
-        ...response.data
+        ...response.data,
       };
     } catch (error) {
-      console.error('❌ Registration error:');
-
       if (error.response) {
-        console.error('📡 Server responded with:', {
-          status: error.response.status,
-          data: error.response.data
-        });
-
         const errorData = error.response.data;
 
         if (typeof errorData === 'object' && !errorData.message && !errorData.detail) {
           const formattedErrors = {};
-          Object.keys(errorData).forEach(key => {
-            formattedErrors[key] = Array.isArray(errorData[key])
-              ? errorData[key][0]
-              : errorData[key];
+          Object.keys(errorData).forEach((key) => {
+            formattedErrors[key] = Array.isArray(errorData[key]) ? errorData[key][0] : errorData[key];
           });
           throw formattedErrors;
         }
@@ -102,7 +94,7 @@ export const authService = {
           throw {
             general: Array.isArray(errorData.non_field_errors)
               ? errorData.non_field_errors[0]
-              : errorData.non_field_errors
+              : errorData.non_field_errors,
           };
         }
 
@@ -110,11 +102,9 @@ export const authService = {
       }
 
       if (error.request) {
-        console.error('🛑 No response received from server:', error.request);
         throw { general: 'No response from server. Check your internet or server status.' };
       }
 
-      console.error('🚨 Unexpected registration error:', error.message);
       throw { general: error.message || 'Unexpected registration error' };
     }
   },
@@ -170,7 +160,6 @@ export const authService = {
 
       throw new Error('No user data returned');
     } catch (error) {
-      console.error('Fetching current user failed:', error);
       throw error.response?.data || { message: 'Failed to fetch user' };
     }
   },
@@ -180,7 +169,6 @@ export const authService = {
       const user = localStorage.getItem('user');
       return user ? JSON.parse(user) : null;
     } catch (error) {
-      console.error('Error parsing user data:', error);
       localStorage.removeItem('user');
       return null;
     }
@@ -203,7 +191,6 @@ export const authService = {
       const currentTime = Date.now() / 1000;
       return payload.exp > currentTime;
     } catch (error) {
-      console.error('Invalid token format:', error);
       return false;
     }
   },
@@ -236,5 +223,5 @@ export const authService = {
       await authService.logout();
       throw error;
     }
-  }
+  },
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import styles
+import { Toaster } from 'react-hot-toast'; // ✅ Switched to react-hot-toast
 
 import Header from './components/login/Header';
 
@@ -23,8 +22,8 @@ function App() {
     <div>
       <Header />
 
-      {/* ✅ Toasts globally available */}
-      <ToastContainer position="top-center" autoClose={3000} />
+      {/* ✅ react-hot-toast global config */}
+      <Toaster position="top-center" reverseOrder={false} />
 
       <Routes>
         <Route path="/" element={<Home />} />

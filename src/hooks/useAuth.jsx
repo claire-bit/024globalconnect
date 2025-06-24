@@ -72,50 +72,46 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     setLoading(true);
     try {
-      console.log("🔍 Raw formData received in useAuth register:", formData);
+      console.log("🔍 Received formData:", formData);
 
+      // ✅ Fix: Send the correct field names that backend expects
       const payload = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        username: formData.username,
-        email: formData.email,
-        password1: formData.password,
-        password2: formData.confirmPassword || formData.password,
+        first_name: formData?.firstName || "",
+        last_name: formData?.lastName || "",
+        username: formData?.username || "",
+        email: formData?.email || "",
+        // Try both field name patterns to match backend expectations
+        password: formData?.password || "",
+        confirm_password: formData?.confirmPassword || "",
+        password1: formData?.password || "",
+        password2: formData?.confirmPassword || "",
       };
-      console.log("🔐 Registration Payload", payload);
+
+      console.log("📦 Final registration payload:", payload);
 
       const registrationResult = await authService.register(payload);
 
-      if (
-        registrationResult.success ||
-        registrationResult.id ||
-        registrationResult.username ||
-        registrationResult.key
-      ) {
+      if (registrationResult.success) {
         return {
           success: true,
           message: 'Registration successful. Please check your email to activate your account.',
           requiresActivation: true,
         };
-      } else {
-        const errors = registrationResult.errors || registrationResult;
-        console.error('Registration failed:', errors);
-        return { success: false, errors };
       }
-    } catch (error) {
-      console.error("Registration error:", {
-        status: error?.response?.status,
-        data: error?.response?.data,
-        message: error?.message,
-      });
 
-      const errorData = error?.response?.data || error;
-      return { success: false, errors: errorData };
+      return {
+        success: false,
+        errors: registrationResult.errors || registrationResult,
+      };
+    } catch (error) {
+      console.error("🔥 useAuth registration error:", error);
+      return { success: false, errors: error };
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Define logout first
   const logout = async () => {
     setLoading(true);
     try {
@@ -131,6 +127,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // ✅ Then define refreshAuth
   const refreshAuth = async () => {
     try {
       const newToken = await authService.refreshAuthToken();
@@ -144,7 +141,7 @@ export const AuthProvider = ({ children }) => {
       return newToken;
     } catch (error) {
       console.error('Token refresh failed:', error);
-      await logout();
+      await logout();  // ✅ Now this works
       throw error;
     }
   };

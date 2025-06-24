@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from "../../hooks/useAuth";
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,6 @@ const LoginForm = () => {
     rememberMe: false
   });
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showResendLink, setShowResendLink] = useState(false);
 
@@ -25,7 +25,6 @@ const LoginForm = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
     if (error) setError('');
-    if (info) setInfo('');
   };
 
   const handleSubmit = async (e) => {
@@ -40,10 +39,9 @@ const LoginForm = () => {
         password: formData.password
       });
 
-      console.log("✅ Login successful");
+      toast.success('✅ Login successful');
       window.location.href = '/dashboard';
     } catch (err) {
-      // 🔍 Enhanced error logging
       console.error("🔥 Full login error object:", err);
 
       const apiData = err?.response?.data;
@@ -55,9 +53,10 @@ const LoginForm = () => {
       console.error("🛑 Login failed with message:", apiMessage);
 
       if (apiMessage.toLowerCase().includes("e-mail is not verified")) {
-        setError("Please activate your account via the link sent to your email.");
+        toast.error("Please activate your account via the link sent to your email.");
         setShowResendLink(true);
       } else {
+        toast.error(apiMessage);
         setError(apiMessage);
       }
     } finally {
@@ -67,20 +66,19 @@ const LoginForm = () => {
 
   const handleResendActivation = async () => {
     if (!formData.email.trim()) {
-      setError("Please enter your email first.");
+      toast.error("Please enter your email first.");
       return;
     }
 
     setIsLoading(true);
     setError('');
-    setInfo('');
 
     try {
       await axios.post("/api/auth/registration/resend-email/", {
         email: formData.email.trim(),
       });
 
-      setInfo("✅ Activation email resent! Check your inbox.");
+      toast.success("✅ Activation email resent! Check your inbox.");
       setShowResendLink(false);
     } catch (err) {
       const message =
@@ -88,16 +86,18 @@ const LoginForm = () => {
         err.response?.data?.email?.[0] ||
         "Could not resend activation email.";
       console.error("Resend activation failed:", message);
-      setError(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const params = new URLSearchParams(location.search);
     if (params.get('activated') === 'true') {
-      setInfo('✅ Your account has been activated. You can now log in.');
+      toast.success('✅ Your account has been activated. You can now log in.');
     }
   }, [location]);
 
@@ -114,14 +114,6 @@ const LoginForm = () => {
             <div className="flex items-center space-x-2 text-red-800">
               <AlertCircle className="w-5 h-5" />
               <p className="text-sm">{error}</p>
-            </div>
-          </div>
-        )}
-
-        {info && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2 text-green-800">
-              <p className="text-sm">{info}</p>
             </div>
           </div>
         )}

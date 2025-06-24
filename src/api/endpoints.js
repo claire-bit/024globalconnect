@@ -1,50 +1,47 @@
 // endpoints.js
 
 export const API_ENDPOINTS = {
-  // Authentication endpoints (dj-rest-auth)
-  LOGIN: '/auth/login/',
-  LOGOUT: '/auth/logout/',
-  REGISTER: '/auth/registration/',
-  CURRENT_USER: '/auth/user/', // ✅ Used in fetchCurrentUser()
+  // ✅ Authentication endpoints (JWT-based)
+  TOKEN_OBTAIN: '/token/',
+  LOGIN: '/users/login/',                   // ✅ Your custom JWT login route
+  REFRESH_TOKEN: '/users/token/refresh/',   // ✅ Your custom refresh route
+  LOGOUT: '/users/logout/',                 // ✅ Your custom logout endpoint
+  REGISTER: '/users/register/',             // ✅ Your custom registration route
+  CURRENT_USER: '/users/me/',               // ✅ Fetch current user
 
-  // JWT Token endpoints
-  TOKEN_OBTAIN: '/api/token/',            // For login if not using dj-rest-auth
-  REFRESH_TOKEN: '/api/token/refresh/',   // Used in token refresh flow
-  REFRESH: '/api/token/refresh/',         // Alias for consistency
+  // ✅ Account activation
+  ACTIVATE_ACCOUNT: (uid, token) => `/api/users/auth/activate/${uid}/${token}/`,
+  RESEND_ACTIVATION_EMAIL: '/api/users/registration/resend-email/',
 
-  // Password reset endpoints (dj-rest-auth)
-  FORGOT_PASSWORD: '/auth/password/reset/',
-  RESET_PASSWORD: '/auth/password/reset/confirm/',
+  // ✅ Password reset
+  FORGOT_PASSWORD: '/api/users/password/reset/',
+  RESET_PASSWORD_CONFIRM: '/api/users/password/reset/confirm/',
 
-  // User profile endpoints (dj-rest-auth or custom)
-  USER_PROFILE: '/auth/user/',
-  UPDATE_PROFILE: '/auth/user/',
+  // ✅ User profile
+  USER_PROFILE: '/api/users/me/',
+  UPDATE_PROFILE: '/api/users/update/',
 
-  // Optional custom auth endpoints
-  CUSTOM_REGISTER: '/api/auth/custom-register/',
-  CUSTOM_LOGIN: '/api/auth/custom-login/',
-
-  // Contact endpoints
+  // ✅ Contact form
   CONTACT_FORM: '/api/contact/submit/',
 
-  // Blog endpoints
+  // ✅ Blog endpoints
   BLOGS: '/api/blogs/',
   BLOG_CREATE: '/api/blogs/',
   BLOG_UPDATE: (id) => `/api/blogs/${id}/`,
   BLOG_DELETE: (id) => `/api/blogs/${id}/`,
   BLOG_PUBLISH: (id) => `/api/blogs/${id}/publish/`,
 
-  // 024 Global Connect-specific
+  // ✅ 024 Global Connect-specific
   OPPORTUNITIES: '/api/opportunities/',
   PARTNERSHIPS: '/api/partnerships/',
   SERVICES: '/api/services/',
 
-  // Test and utility
+  // ✅ Utility
   HELLO: '/api/hello/',
   PROTECTED: '/api/protected/',
 };
 
-// Helper function to get full URL
+// Helper: Full URL
 export const getFullUrl = (endpoint, baseUrl = '') => {
   if (typeof endpoint === 'function') {
     throw new Error('Use the endpoint function first, then pass the result to getFullUrl');
@@ -54,42 +51,21 @@ export const getFullUrl = (endpoint, baseUrl = '') => {
 
 // Validation helper
 export const validateEndpoint = (endpoint) => {
-  if (!endpoint) {
-    throw new Error('Endpoint is required');
-  }
+  if (!endpoint) throw new Error('Endpoint is required');
   if (!endpoint.startsWith('/')) {
     console.warn(`Endpoint "${endpoint}" should start with "/"`);
   }
   return endpoint;
 };
 
-// Shortcut groupings
+// Grouped shortcut for auth
 export const AUTH_ENDPOINTS = {
   LOGIN: API_ENDPOINTS.LOGIN,
   LOGOUT: API_ENDPOINTS.LOGOUT,
   REGISTER: API_ENDPOINTS.REGISTER,
   CURRENT_USER: API_ENDPOINTS.CURRENT_USER,
-  GET_TOKEN: API_ENDPOINTS.TOKEN_OBTAIN,
+  GET_TOKEN: API_ENDPOINTS.LOGIN,
   REFRESH_TOKEN: API_ENDPOINTS.REFRESH_TOKEN,
-  CUSTOM_LOGIN: API_ENDPOINTS.CUSTOM_LOGIN,
-  CUSTOM_REGISTER: API_ENDPOINTS.CUSTOM_REGISTER,
+  ACTIVATE: API_ENDPOINTS.ACTIVATE_ACCOUNT,
+  RESEND_EMAIL: API_ENDPOINTS.RESEND_ACTIVATION_EMAIL,
 };
-
-/*
-Example usage:
-
-// Login
-fetch(API_ENDPOINTS.LOGIN, { method: 'POST', body: ... })
-
-// Token refresh
-fetch(API_ENDPOINTS.REFRESH_TOKEN, { method: 'POST', body: ... })
-
-// Dynamic endpoint
-fetch(API_ENDPOINTS.BLOG_UPDATE(42), { method: 'PUT', body: ... })
-
-// Full URL with base
-getFullUrl(API_ENDPOINTS.LOGIN, 'https://api.024global.com')
-
-// Validate usage
-validateEndpoint('/auth/login/')
-*/
