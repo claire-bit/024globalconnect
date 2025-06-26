@@ -10,10 +10,8 @@ import RegistrationForm from './components/login/RegistrationForm';
 import ContactForm from './components/login/ContactForm';
 import AboutUs from './pages/AboutUs';
 import BlogForm from './components/login/BlogForm';
-import AffiliateSignup from './components/affiliate/AffiliateSignup';
-import AffiliateLogin from './components/affiliate/AffiliateLogin';
 import AffiliatePartner from './components/affiliate/AffiliatePartner';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './components/login/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import ProtectedData from './pages/ProtectedData';
 
@@ -32,8 +30,6 @@ function App() {
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blog" element={<BlogForm />} />
-        <Route path="/affiliate-signup" element={<AffiliateSignup />} />
-        <Route path="/affiliate-login" element={<AffiliateLogin />} />
         <Route path="/affiliate-partner" element={<AffiliatePartner />} />
 
         <Route

@@ -1,3 +1,4 @@
+// useAuth.jsx
 import { useState, useEffect, createContext, useContext } from 'react';
 import { authService } from '../api/services/authService';
 
@@ -74,17 +75,18 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("🔍 Received formData:", formData);
 
-      // ✅ Fix: Send the correct field names that backend expects
       const payload = {
-        first_name: formData?.firstName || "",
-        last_name: formData?.lastName || "",
-        username: formData?.username || "",
-        email: formData?.email || "",
-        // Try both field name patterns to match backend expectations
-        password: formData?.password || "",
-        confirm_password: formData?.confirmPassword || "",
-        password1: formData?.password || "",
-        password2: formData?.confirmPassword || "",
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        confirm_password: formData.confirm_password,
+        country: formData.country,
+        city: formData.city,
+        website: formData.website,
+        experience: formData.experience,
+        promotion_methods: formData.promotion_methods,
       };
 
       console.log("📦 Final registration payload:", payload);
@@ -94,7 +96,7 @@ export const AuthProvider = ({ children }) => {
       if (registrationResult.success) {
         return {
           success: true,
-          message: 'Registration successful. Please check your email to activate your account.',
+          message: 'Registration successful. Please check your email.',
           requiresActivation: true,
         };
       }
@@ -111,7 +113,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Define logout first
   const logout = async () => {
     setLoading(true);
     try {
@@ -127,7 +128,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Then define refreshAuth
   const refreshAuth = async () => {
     try {
       const newToken = await authService.refreshAuthToken();
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }) => {
       return newToken;
     } catch (error) {
       console.error('Token refresh failed:', error);
-      await logout();  // ✅ Now this works
+      await logout();
       throw error;
     }
   };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Save, Eye, X, Plus, Tag, Calendar, User } from 'lucide-react';
+import { createBlogPost } from '../../api/services/blogService';
 
 const BlogForm = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const BlogForm = () => {
   const [errors, setErrors] = useState({});
 
   const categories = [
-    'Technology', 'Business', 'Lifestyle', 'Travel', 'Food', 
+    'Technology', 'Business', 'Lifestyle', 'Travel', 'Food',
     'Health', 'Education', 'Entertainment', 'Sports', 'Other'
   ];
 
@@ -32,7 +33,6 @@ const BlogForm = () => {
       [name]: value
     }));
 
-    // Auto-generate slug from title
     if (name === 'title') {
       const slug = value
         .toLowerCase()
@@ -44,7 +44,6 @@ const BlogForm = () => {
       }));
     }
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -73,22 +72,10 @@ const BlogForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = 'Content is required';
-    }
-
-    if (!formData.category) {
-      newErrors.category = 'Category is required';
-    }
-
-    if (!formData.author.trim()) {
-      newErrors.author = 'Author is required';
-    }
-
+    if (!formData.title.trim()) newErrors.title = 'Title is required';
+    if (!formData.content.trim()) newErrors.content = 'Content is required';
+    if (!formData.category) newErrors.category = 'Category is required';
+    if (!formData.author.trim()) newErrors.author = 'Author is required';
     if (formData.status === 'published' && !formData.publishDate) {
       newErrors.publishDate = 'Publish date is required for published posts';
     }
@@ -97,19 +84,45 @@ const BlogForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e, action) => {
+  const handleSubmit = async (e, action) => {
     e.preventDefault();
-    
+
+    const updatedForm = { ...formData };
+
     if (action === 'publish') {
-      formData.status = 'published';
-      if (!formData.publishDate) {
-        formData.publishDate = new Date().toISOString().split('T')[0];
+      updatedForm.status = 'published';
+      if (!updatedForm.publishDate) {
+        updatedForm.publishDate = new Date().toISOString().split('T')[0];
       }
     }
 
     if (validateForm()) {
-      console.log('Form submitted:', { ...formData, action });
-      alert(`Blog post ${action === 'publish' ? 'published' : 'saved as draft'} successfully!`);
+      try {
+        await createBlogPost(updatedForm);
+        alert(`Blog post ${action === 'publish' ? 'published' : 'saved as draft'} successfully!`);
+        setFormData({
+          title: '',
+          slug: '',
+          content: '',
+          excerpt: '',
+          category: '',
+          tags: [],
+          status: 'draft',
+          featuredImage: '',
+          publishDate: '',
+          author: '',
+          metaTitle: '',
+          metaDescription: ''
+        });
+        setNewTag('');
+      } catch (error) {
+        console.error('Submission error:', error);
+        if (error.response && error.response.data) {
+          alert('Error: ' + JSON.stringify(error.response.data));
+        } else {
+          alert('An unexpected error occurred while submitting the blog.');
+        }
+      }
     }
   };
 
@@ -132,29 +145,23 @@ const BlogForm = () => {
             <User className="mr-2 h-5 w-5" />
             Basic Information
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.title ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Enter blog post title"
               />
               {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Slug
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
               <input
                 type="text"
                 name="slug"
@@ -166,33 +173,25 @@ const BlogForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Author *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Author *</label>
               <input
                 type="text"
                 name="author"
                 value={formData.author}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.author ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.author ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Author name"
               />
               {errors.author && <p className="text-red-500 text-sm mt-1">{errors.author}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.category ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
               >
                 <option value="">Select a category</option>
                 {categories.map(cat => (
@@ -207,12 +206,9 @@ const BlogForm = () => {
         {/* Content */}
         <div className="bg-gray-50 p-6 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Content</h2>
-          
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Excerpt
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
               <textarea
                 name="excerpt"
                 value={formData.excerpt}
@@ -224,17 +220,13 @@ const BlogForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Content *</label>
               <textarea
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
                 rows="12"
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.content ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.content ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Write your blog post content here..."
               />
               {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content}</p>}
@@ -248,7 +240,7 @@ const BlogForm = () => {
             <Tag className="mr-2 h-5 w-5" />
             Tags
           </h2>
-          
+
           <div className="flex gap-2 mb-4">
             <input
               type="text"
@@ -269,10 +261,7 @@ const BlogForm = () => {
 
           <div className="flex flex-wrap gap-2">
             {formData.tags.map(tag => (
-              <span
-                key={tag}
-                className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-              >
+              <span key={tag} className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                 {tag}
                 <button
                   type="button"
@@ -292,12 +281,10 @@ const BlogForm = () => {
             <Calendar className="mr-2 h-5 w-5" />
             Publishing Options
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <select
                 name="status"
                 value={formData.status}
@@ -311,25 +298,19 @@ const BlogForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Publish Date
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Publish Date</label>
               <input
                 type="date"
                 name="publishDate"
                 value={formData.publishDate}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.publishDate ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.publishDate ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.publishDate && <p className="text-red-500 text-sm mt-1">{errors.publishDate}</p>}
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Featured Image URL
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image URL</label>
               <input
                 type="url"
                 name="featuredImage"
@@ -342,39 +323,35 @@ const BlogForm = () => {
           </div>
         </div>
 
-        {/* SEO Options */}
+        {/* SEO Settings */}
         <div className="bg-gray-50 p-6 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">SEO Settings</h2>
-          
+
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Meta Title
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Meta Title</label>
               <input
                 type="text"
                 name="metaTitle"
                 value={formData.metaTitle}
                 onChange={handleInputChange}
+                maxLength="60"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="SEO title (leave blank to use post title)"
-                maxLength="60"
               />
               <p className="text-sm text-gray-500 mt-1">{formData.metaTitle.length}/60 characters</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Meta Description
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
               <textarea
                 name="metaDescription"
                 value={formData.metaDescription}
                 onChange={handleInputChange}
+                maxLength="160"
                 rows="3"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Brief description for search engines..."
-                maxLength="160"
               />
               <p className="text-sm text-gray-500 mt-1">{formData.metaDescription.length}/160 characters</p>
             </div>
@@ -391,7 +368,7 @@ const BlogForm = () => {
             <Eye className="mr-2 h-4 w-4" />
             Preview
           </button>
-          
+
           <button
             type="button"
             onClick={(e) => handleSubmit(e, 'draft')}
@@ -400,7 +377,7 @@ const BlogForm = () => {
             <Save className="mr-2 h-4 w-4" />
             Save Draft
           </button>
-          
+
           <button
             type="button"
             onClick={(e) => handleSubmit(e, 'publish')}

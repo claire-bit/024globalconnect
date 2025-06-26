@@ -5,7 +5,7 @@ import { Globe, Users, TrendingUp, Shield, Award, Target, ArrowRight, Check } fr
 const AboutUs = () => {
   const stats = [
     { number: '50K+', label: 'Active Affiliates', icon: Users },
-    { number: '120+', label: 'Countries Served', icon: Globe },
+    { number: '10+', label: 'Countries Served', icon: Globe },
     { number: '98%', label: 'Success Rate', icon: TrendingUp },
     { number: '24/7', label: 'Support Available', icon: Shield }
   ];
@@ -241,7 +241,7 @@ const AboutUs = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/affiliate-signup" 
+              to="/register" 
               className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl hover:bg-blue-50 transition-all duration-200 flex items-center justify-center group text-decoration-none"
             >
              Become an Affiliate

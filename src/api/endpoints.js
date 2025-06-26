@@ -24,12 +24,12 @@ export const API_ENDPOINTS = {
   // ✅ Contact form
   CONTACT_FORM: '/api/contact/submit/',
 
-  // ✅ Blog endpoints
-  BLOGS: '/api/blogs/',
+   BLOGS: '/api/blogs/',
   BLOG_CREATE: '/api/blogs/',
   BLOG_UPDATE: (id) => `/api/blogs/${id}/`,
   BLOG_DELETE: (id) => `/api/blogs/${id}/`,
   BLOG_PUBLISH: (id) => `/api/blogs/${id}/publish/`,
+  BLOG_MY_POSTS: '/api/blogs/my-posts/',
 
   // ✅ 024 Global Connect-specific
   OPPORTUNITIES: '/api/opportunities/',
