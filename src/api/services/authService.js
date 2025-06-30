@@ -1,4 +1,4 @@
-// services/authService.js
+// ✅ FINAL authService.js
 import axios from 'axios';
 import apiClient from '../client';
 import { API_ENDPOINTS } from '../endpoints';
@@ -9,10 +9,6 @@ export const authService = {
   login: async ({ username, password }) => {
     try {
       const payload = { username, password };
-      console.log('🔐 Sending login payload:', payload);
-
-
-      // JWT login using /api/token/
       const response = await apiClient.post(API_ENDPOINTS.TOKEN_OBTAIN, payload);
 
       if (response.data.access) {
@@ -42,8 +38,10 @@ export const authService = {
         email: userData.email,
         password: userData.password,
         confirm_password: userData.confirm_password,
-        password1: userData.password1 || userData.password,
-        password2: userData.password2 || userData.confirm_password,
+        country: userData.country,
+        city: userData.city,
+        promotion_methods: userData.promotion_methods,
+        role: userData.role,
       };
 
       const response = await axios.post(`${API_BASE_URL}/users/register/`, registrationPayload, {
@@ -52,23 +50,6 @@ export const authService = {
           'Content-Type': 'application/json',
         },
       });
-
-      if (response.data.access || response.data.access_token) {
-        const token = response.data.access || response.data.access_token;
-        const refresh = response.data.refresh || response.data.refresh_token;
-
-        localStorage.setItem('authToken', token);
-        if (refresh) {
-          localStorage.setItem('refreshToken', refresh);
-        }
-
-        if (!response.data.user) {
-          const user = await authService.fetchCurrentUser();
-          response.data.user = user;
-        }
-
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
 
       return {
         success: true,
@@ -174,13 +155,9 @@ export const authService = {
     }
   },
 
-  getAuthToken: () => {
-    return localStorage.getItem('authToken');
-  },
+  getAuthToken: () => localStorage.getItem('authToken'),
 
-  getRefreshToken: () => {
-    return localStorage.getItem('refreshToken');
-  },
+  getRefreshToken: () => localStorage.getItem('refreshToken'),
 
   isAuthenticated: () => {
     const token = localStorage.getItem('authToken');
@@ -198,9 +175,7 @@ export const authService = {
   refreshAuthToken: async () => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
+      if (!refreshToken) throw new Error('No refresh token available');
 
       const response = await apiClient.post(API_ENDPOINTS.REFRESH_TOKEN || API_ENDPOINTS.REFRESH, {
         refresh: refreshToken,

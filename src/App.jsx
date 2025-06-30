@@ -1,6 +1,7 @@
+// ✅ FINAL App.jsx with Role-Based Dashboard
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast'; // ✅ Switched to react-hot-toast
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 import Header from './components/login/Header';
 
@@ -9,18 +10,31 @@ import LoginForm from './components/login/LoginForm';
 import RegistrationForm from './components/login/RegistrationForm';
 import ContactForm from './components/login/ContactForm';
 import AboutUs from './pages/AboutUs';
-import BlogForm from './components/login/BlogForm';
 import AffiliatePartner from './components/affiliate/AffiliatePartner';
-import Dashboard from './components/login/Dashboard';
+
 import PrivateRoute from './components/PrivateRoute';
 import ProtectedData from './pages/ProtectedData';
 
+// Dashboards
+import AffiliateDashboard from './components/affiliate/AffiliateDashboard';
+import VendorDashboard from './components/vendor/VendorDashboard';
+import AdminDashboard from './components/admin/AdminDashboard';
+
+import { useAuth } from './hooks/useAuth';
+
 function App() {
+  const { user } = useAuth();
+
+  const roleBasedDashboard = () => {
+    if (!user) return <Navigate to="/login" replace />;
+    if (user.role === 'vendor') return <VendorDashboard />;
+    if (user.role === 'admin') return <AdminDashboard />;
+    return <AffiliateDashboard />;
+  };
+
   return (
     <div>
       <Header />
-
-      {/* ✅ react-hot-toast global config */}
       <Toaster position="top-center" reverseOrder={false} />
 
       <Routes>
@@ -29,17 +43,14 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/blog" element={<BlogForm />} />
         <Route path="/affiliate-partner" element={<AffiliatePartner />} />
 
+        {/* Role-based dashboard */}
         <Route
           path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
+          element={<PrivateRoute>{roleBasedDashboard()}</PrivateRoute>}
         />
+
         <Route
           path="/protected-test"
           element={

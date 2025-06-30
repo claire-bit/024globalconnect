@@ -83,7 +83,6 @@ const Header = () => {
             {[
               { label: 'Home', href: '/' },
               { label: 'Mission', href: '#mission' },
-              { label: 'Blog', href: '/blog' },
               { label: 'Contact', href: '/contact' },
               { label: 'About Us', href: '/aboutus' }
             ].map(({ label, href }) => (

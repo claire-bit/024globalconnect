@@ -69,7 +69,7 @@ const AboutUs = () => {
             024GlobalConnect
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-            Connecting brands with audiences worldwide through innovative affiliate marketing solutions
+            Empowering African Communities through Smart Digital Linkages.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 text-sm font-medium">
@@ -113,18 +113,9 @@ const AboutUs = () => {
               <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Founded in 2025, 024GlobalConnect emerged from a simple vision: to revolutionize 
-                  how brands connect with their audiences through authentic, performance-driven 
-                  affiliate marketing.
-                </p>
+                  Founded in 2025, 024GlobalConnect is a digital ecosystem providing smart linkages in marketing, e-commerce,affiliate sells and data-driven community support.</p>
                 <p>
-                  What started as a small team of digital marketing enthusiasts has grown into 
-                  a global network spanning over many countries, connecting thousands of brands 
-                  with millions of potential customers.
-                </p>
-                <p>
-                  We believe in the power of genuine connections. Every partnership we facilitate 
-                  is built on trust, transparency, and mutual success.
+                  We use technology,partnerships and community training to bridge market gaps, generate income and scale local businesses.
                 </p>
               </div>
               <div className="mt-8">

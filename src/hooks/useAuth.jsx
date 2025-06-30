@@ -1,4 +1,4 @@
-// useAuth.jsx
+// ✅ FINAL useAuth.jsx (Updated with array validation + role fallback)
 import { useState, useEffect, createContext, useContext } from 'react';
 import { authService } from '../api/services/authService';
 
@@ -50,12 +50,9 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.login(loginData);
 
       const loggedInUser = {
-        username: data.user?.username || loginData.username,
-        email: data.user?.email || '',
-        first_name: data.user?.first_name || '',
-        last_name: data.user?.last_name || '',
-        id: data.user?.id || data.id,
         ...data.user,
+        username: data.user?.username || loginData.username,
+        id: data.user?.id || data.id,
       };
 
       setUser(loggedInUser);
@@ -73,7 +70,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     setLoading(true);
     try {
-      console.log("🔍 Received formData:", formData);
+      // 🛡️ Ensure promotion_methods is an array
+      const promotionMethods = Array.isArray(formData.promotion_methods)
+        ? formData.promotion_methods
+        : [];
+
+      // 🛡️ Default role to 'user' if not provided
+      const userRole = formData.role?.trim() || 'user';
 
       const payload = {
         first_name: formData.first_name,
@@ -84,12 +87,9 @@ export const AuthProvider = ({ children }) => {
         confirm_password: formData.confirm_password,
         country: formData.country,
         city: formData.city,
-        website: formData.website,
-        experience: formData.experience,
-        promotion_methods: formData.promotion_methods,
+        promotion_methods: promotionMethods,
+        role: userRole,
       };
-
-      console.log("📦 Final registration payload:", payload);
 
       const registrationResult = await authService.register(payload);
 
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
         errors: registrationResult.errors || registrationResult,
       };
     } catch (error) {
-      console.error("🔥 useAuth registration error:", error);
+      console.error("🔥 useAuth registration error:", JSON.stringify(error, null, 2));
       return { success: false, errors: error };
     } finally {
       setLoading(false);
@@ -122,8 +122,8 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
       setLoading(false);
     }
   };
