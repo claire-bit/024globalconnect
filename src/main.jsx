@@ -12,7 +12,7 @@ import { AuthProvider } from './hooks/useAuth';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>  {/* 👈 Wrap App here */}
+      <AuthProvider>
         <App />
       </AuthProvider>
     </BrowserRouter>

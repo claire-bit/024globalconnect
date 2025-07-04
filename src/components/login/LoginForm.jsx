@@ -1,5 +1,7 @@
+// src/components/login/LoginForm.jsx
+
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from "../../hooks/useAuth";
 import axios from 'axios';
@@ -15,8 +17,18 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showResendLink, setShowResendLink] = useState(false);
 
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // ✅ Auto-redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'vendor') navigate('/vendor/dashboard');
+      else if (user.role === 'admin') navigate('/admin/dashboard');
+      else navigate('/affiliate/dashboard');
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -34,30 +46,35 @@ const LoginForm = () => {
     setShowResendLink(false);
 
     try {
-      await login({
+      const result = await login({
         username: formData.email,
         password: formData.password
       });
 
-      toast.success('✅ Login successful');
-      window.location.href = '/dashboard';
+      if (result.success) {
+        toast.success('✅ Login successful');
+        // Redirect handled by auto-redirect useEffect
+      } else {
+        throw result.errors;
+      }
     } catch (err) {
       console.error("🔥 Full login error object:", err);
 
-      const apiData = err?.response?.data;
       const apiMessage =
-        apiData?.detail ||
-        apiData?.non_field_errors?.[0] ||
-        "Login failed. Please check your credentials.";
+        err?.message?.toLowerCase?.() || "login failed";
 
-      console.error("🛑 Login failed with message:", apiMessage);
-
-      if (apiMessage.toLowerCase().includes("e-mail is not verified")) {
+      if (apiMessage.includes("not verified")) {
         toast.error("Please activate your account via the link sent to your email.");
         setShowResendLink(true);
+      } else if (apiMessage.includes("no active account")) {
+        toast.error("No account found. Please register or check your credentials.");
+        setError("No active account found with the provided credentials.");
+      } else if (apiMessage.includes("invalid") || apiMessage.includes("unable to log in")) {
+        toast.error("Invalid login. Please check your username/email and password.");
+        setError("Invalid username or password.");
       } else {
-        toast.error(apiMessage);
-        setError(apiMessage);
+        toast.error("Login failed. Please try again.");
+        setError("Login failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -85,7 +102,6 @@ const LoginForm = () => {
         err.response?.data?.detail ||
         err.response?.data?.email?.[0] ||
         "Could not resend activation email.";
-      console.error("Resend activation failed:", message);
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -123,7 +139,7 @@ const LoginForm = () => {
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email or Username
             </label>
-            <div className="mt-1 flex items-center border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="mt-1 flex items-center border border-gray-300 rounded-lg px-3 py-2 shadow-sm">
               <Mail className="w-5 h-5 text-gray-400 mr-2" />
               <input
                 id="email"
@@ -143,7 +159,7 @@ const LoginForm = () => {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <div className="mt-1 flex items-center border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="mt-1 flex items-center border border-gray-300 rounded-lg px-3 py-2 shadow-sm">
               <Lock className="w-5 h-5 text-gray-400 mr-2" />
               <input
                 id="password"

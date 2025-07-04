@@ -1,10 +1,11 @@
-// src/components/affiliate/AffiliateDashboard.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { ClipboardCheck, Gift, TrendingUp, Coins } from "lucide-react";
 import ProductList from "./ProductList";
 import ReferralTable from "./ReferralTable";
-import ProfileOverview from "./ProfileOverview"; // ✅ Import the new profile component
+import ProfileOverview from "./ProfileOverview";
+import apiClient from "../../api/client"; 
+import CommissionStats from "./CommissionStats";
 
 const AffiliateDashboard = () => {
   const { user } = useAuth();
@@ -17,17 +18,32 @@ const AffiliateDashboard = () => {
   });
 
   useEffect(() => {
-    // TODO: Replace with real API call to /api/affiliate/summary/
-    setStats({
-      totalCommission: 3600,
-      totalReferrals: 75,
-      totalPurchases: 24,
-      conversionRate: 32,
-    });
+    const fetchStats = async () => {
+      try {
+        const res = await apiClient.get("/users/affiliate/summary/");
+        const {
+          total_commission,
+          total_referrals,
+          total_purchases,
+          conversion_rate,
+        } = res.data;
+
+        setStats({
+          totalCommission: total_commission,
+          totalReferrals: total_referrals,
+          totalPurchases: total_purchases,
+          conversionRate: conversion_rate,
+        });
+      } catch (error) {
+        console.error("Failed to fetch affiliate summary:", error);
+      }
+    };
+
+    fetchStats();
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-8">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-10 px-4 md:px-8">
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Welcome Message */}
         <div>
@@ -42,33 +58,8 @@ const AffiliateDashboard = () => {
         {/* ✅ Profile Overview */}
         <ProfileOverview />
 
-        {/* Stats Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <StatCard
-            icon={Coins}
-            label="Total Commission"
-            value={`KES ${stats.totalCommission}`}
-            color="bg-green-100 text-green-700"
-          />
-          <StatCard
-            icon={Gift}
-            label="Referrals"
-            value={stats.totalReferrals}
-            color="bg-blue-100 text-blue-700"
-          />
-          <StatCard
-            icon={ClipboardCheck}
-            label="Purchases"
-            value={stats.totalPurchases}
-            color="bg-yellow-100 text-yellow-700"
-          />
-          <StatCard
-            icon={TrendingUp}
-            label="Conversion Rate"
-            value={`${stats.conversionRate}%`}
-            color="bg-purple-100 text-purple-700"
-          />
-        </div>
+       {/* 📊 Stats + Chart */}
+<CommissionStats />
 
         {/* Product List Section */}
         <section>

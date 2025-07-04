@@ -1,4 +1,4 @@
-// ✅ FINAL useAuth.jsx (Updated with array validation + role fallback)
+// src/hooks/useAuth.jsx
 import { useState, useEffect, createContext, useContext } from 'react';
 import { authService } from '../api/services/authService';
 
@@ -48,20 +48,35 @@ export const AuthProvider = ({ children }) => {
       };
 
       const data = await authService.login(loginData);
+      const { access, refresh, user } = data;
 
-      const loggedInUser = {
-        ...data.user,
-        username: data.user?.username || loginData.username,
-        id: data.user?.id || data.id,
-      };
+      localStorage.setItem('authToken', access);
+      localStorage.setItem('refreshToken', refresh);
+      localStorage.setItem('user', JSON.stringify(user));
 
-      setUser(loggedInUser);
-      localStorage.setItem('user', JSON.stringify(loggedInUser));
+      setUser(user);
+
+      // ✅ Redirect to role-based dashboard
+      window.location.href =
+        user.role === 'admin'
+          ? '/admin/dashboard'
+          : user.role === 'vendor'
+          ? '/vendor/dashboard'
+          : '/affiliate/dashboard';
 
       return { success: true, data };
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, errors: error };
+      const apiMessage =
+        error?.response?.data?.detail ||
+        error?.response?.data?.non_field_errors?.[0] ||
+        "Login failed. Please check your credentials.";
+
+      console.error('Login error:', apiMessage);
+
+      return {
+        success: false,
+        errors: { message: apiMessage, raw: error },
+      };
     } finally {
       setLoading(false);
     }
@@ -70,13 +85,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     setLoading(true);
     try {
-      // 🛡️ Ensure promotion_methods is an array
       const promotionMethods = Array.isArray(formData.promotion_methods)
         ? formData.promotion_methods
         : [];
-
-      // 🛡️ Default role to 'user' if not provided
-      const userRole = formData.role?.trim() || 'user';
 
       const payload = {
         first_name: formData.first_name,
@@ -88,7 +99,7 @@ export const AuthProvider = ({ children }) => {
         country: formData.country,
         city: formData.city,
         promotion_methods: promotionMethods,
-        role: userRole,
+        role: formData.role?.trim() || 'user',
       };
 
       const registrationResult = await authService.register(payload);
@@ -121,9 +132,6 @@ export const AuthProvider = ({ children }) => {
       console.error('Logout error:', error);
     } finally {
       setUser(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('refreshToken');
       setLoading(false);
     }
   };
@@ -167,9 +175,5 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: isAuthenticated(),
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

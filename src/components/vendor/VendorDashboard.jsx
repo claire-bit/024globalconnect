@@ -1,25 +1,60 @@
 // src/components/vendor/VendorDashboard.jsx
-import React from 'react';
+import React, { useState } from "react";
+import MyProduct from "./MyProducts";
+import AddProductForm from "./AddProductForm";
+import SalesOverview from "./SalesOverview";
 
 const VendorDashboard = () => {
+  const [activeTab, setActiveTab] = useState("products");
+
+  const renderTab = () => {
+    switch (activeTab) {
+      case "products":
+        return <MyProduct />;
+      case "add":
+        return <AddProductForm />;
+      case "sales":
+        return <SalesOverview />;
+      default:
+        return <MyProduct />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-3xl font-bold text-blue-700 mb-4">Vendor Dashboard</h1>
-      <p className="text-gray-700">Welcome, Vendor. You can upload and manage your products here.</p>
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">Vendor Dashboard</h1>
 
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-4 shadow border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">My Products</h2>
-          <p className="text-sm text-gray-600">View, update, or delete your listed products.</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Add New Product</h2>
-          <p className="text-sm text-gray-600">Upload a new product for affiliates to promote.</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Product Performance</h2>
-          <p className="text-sm text-gray-600">Track clicks, conversions, and affiliate-driven sales.</p>
-        </div>
+      {/* Tab Buttons */}
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={() => setActiveTab("products")}
+          className={`px-4 py-2 rounded ${
+            activeTab === "products" ? "bg-blue-600 text-white" : "bg-white text-blue-600 border"
+          }`}
+        >
+          📦 My Products
+        </button>
+        <button
+          onClick={() => setActiveTab("add")}
+          className={`px-4 py-2 rounded ${
+            activeTab === "add" ? "bg-blue-600 text-white" : "bg-white text-blue-600 border"
+          }`}
+        >
+          ➕ Add Product
+        </button>
+        <button
+          onClick={() => setActiveTab("sales")}
+          className={`px-4 py-2 rounded ${
+            activeTab === "sales" ? "bg-blue-600 text-white" : "bg-white text-blue-600 border"
+          }`}
+        >
+          📊 Sales Overview
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      <div className="bg-white rounded-xl p-6 shadow border border-gray-200">
+        {renderTab()}
       </div>
     </div>
   );

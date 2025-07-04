@@ -1,14 +1,15 @@
-// ✅ FINAL endpoints.js
+// src/api/endpoints.js
+const API_BASE_URL = 'http://localhost:8000/api';
 
 export const API_ENDPOINTS = {
-  // ✅ Authentication endpoints (JWT-based)
-  TOKEN_OBTAIN: '/token/',                          // JWT login (email or username)
-  REFRESH_TOKEN: '/token/refresh/',                 // Refresh token
-  LOGOUT: '/users/logout/',                         // Logout user
-  REGISTER: '/users/register/',                     // Register (affiliate/vendor)
-  CURRENT_USER: '/users/me/',                       // Get logged-in user details
+  // ✅ Authentication
+  TOKEN_OBTAIN: '/token/',                           // login (email or username)
+  REFRESH_TOKEN: '/token/refresh/',                  // refresh token
+  LOGOUT: '/users/logout/',
+  REGISTER: '/users/register/',
+  CURRENT_USER: '/users/me/',
 
-  // ✅ Account activation
+  // ✅ Activation
   ACTIVATE_ACCOUNT: (uid, token) => `/users/auth/activate/${uid}/${token}/`,
   RESEND_ACTIVATION_EMAIL: '/users/registration/resend-email/',
 
@@ -16,42 +17,39 @@ export const API_ENDPOINTS = {
   FORGOT_PASSWORD: '/users/password/reset/',
   RESET_PASSWORD_CONFIRM: '/users/password/reset/confirm/',
 
-  // ✅ User profile
+  // ✅ Profile
   USER_PROFILE: '/users/me/',
   UPDATE_PROFILE: '/users/update/',
 
-  // ✅ Affiliate-specific
+  // ✅ Affiliate
   AFFILIATE_SUMMARY: '/users/affiliate/summary/',
-  AFFILIATE_REFERRALS: '/referrals/',
-  AFFILIATE_PAYOUT_REQUEST: '/users/affiliate/payout-request/',
+  AFFILIATE_REFERRALS: '/users/affiliate/referrals/',
 
-  // ✅ Vendor-specific
-  VENDOR_PRODUCTS: '/products/',
-  VENDOR_PRODUCT_DETAIL: (id) => `/products/${id}/`,
+  // ✅ Vendor
+  VENDOR_PRODUCTS: `${API_BASE_URL}/products/`,
+  VENDOR_PRODUCT_DETAIL: (id) => `${API_BASE_URL}/products/${id}/`,
 
-  // ✅ Admin-specific
+  // ✅ Admin
   ADMIN_REPORTS: '/admin/reports/',
   ADMIN_PAYOUT_APPROVAL: '/admin/payouts/approve/',
   ADMIN_ANALYTICS: '/admin/analytics/',
 
-  // ✅ M-Pesa Integration
+  // ✅ M-Pesa
   MPESA_INITIATE_PAYMENT: '/payments/mpesa/initiate/',
   MPESA_PAYMENT_CALLBACK: '/payments/mpesa/callback/',
 
   // ✅ Contact
   CONTACT_FORM: '/contact/submit/',
 
-  // ✅ 024 Global Connect-specific
+  // ✅ Misc
   OPPORTUNITIES: '/opportunities/',
   PARTNERSHIPS: '/partnerships/',
   SERVICES: '/services/',
-
-  // ✅ Utility
   HELLO: '/hello/',
   PROTECTED: '/protected/',
 };
 
-// 🌐 Helper: Compose full URL
+// Utility
 export const getFullUrl = (endpoint, baseUrl = '') => {
   if (typeof endpoint === 'function') {
     throw new Error('Use the endpoint function first, then pass the result to getFullUrl');
@@ -59,7 +57,6 @@ export const getFullUrl = (endpoint, baseUrl = '') => {
   return `${baseUrl}${endpoint}`;
 };
 
-// 🧪 Helper: Validate endpoint format
 export const validateEndpoint = (endpoint) => {
   if (!endpoint) throw new Error('Endpoint is required');
   if (!endpoint.startsWith('/')) {
@@ -68,7 +65,6 @@ export const validateEndpoint = (endpoint) => {
   return endpoint;
 };
 
-// ⚙️ Shortcut group for auth
 export const AUTH_ENDPOINTS = {
   LOGIN: API_ENDPOINTS.TOKEN_OBTAIN,
   LOGOUT: API_ENDPOINTS.LOGOUT,

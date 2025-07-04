@@ -1,3 +1,4 @@
+// src/components/auth/RegistrationForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -28,7 +29,7 @@ const RegistrationForm = () => {
     country: "",
     city: "",
     promotion_methods: [],
-    role: "user",
+    role: "user", // default to affiliate
   });
 
   const [errors, setErrors] = useState({});
@@ -36,11 +37,11 @@ const RegistrationForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
       ...(name === "country" ? { city: "" } : {}),
-    });
+    }));
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -87,21 +88,10 @@ const RegistrationForm = () => {
         toast.success("Registration successful! Please check your email to activate your account.");
         setTimeout(() => navigate("/login?registered=true"), 2000);
       } else if (result.errors) {
-        const backendErrors = result.errors;
-
-        Object.keys(backendErrors).forEach((field) => {
-          toast.error(`${field}: ${backendErrors[field]}`);
-        });
-
-        setErrors((prev) => ({
-          ...prev,
-          ...backendErrors,
-        }));
-
-        // Optional: clear the email if it's duplicated
-        if (backendErrors.email) {
-          setFormData((prev) => ({ ...prev, email: "" }));
-        }
+        Object.entries(result.errors).forEach(([field, msg]) =>
+          toast.error(`${field}: ${msg}`)
+        );
+        setErrors((prev) => ({ ...prev, ...result.errors }));
       } else {
         toast.error("Registration failed. Please try again.");
       }
@@ -121,15 +111,11 @@ const RegistrationForm = () => {
       <Toaster position="top-right" />
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="bg-blue-night text-white p-6 flex flex-col md:flex-row items-center gap-6">
-          <img
-            src={logoImage}
-            alt="024 Global Connect Logo"
-            className="w-24 h-24 rounded-full shadow-md bg-white p-1"
-          />
+          <img src={logoImage} alt="Logo" className="w-24 h-24 rounded-full shadow-md bg-white p-1" />
           <div className="text-center md:text-left">
             <h1 className="text-3xl font-bold">Welcome to 024GLOBALCONNECT!</h1>
             <p className="text-lg mt-2 opacity-90">
-              Unlock your potential with us — let's grow, connect, and succeed together. 🚀
+              Unlock your potential — grow, connect, and succeed. 🚀
             </p>
           </div>
         </div>
@@ -139,9 +125,9 @@ const RegistrationForm = () => {
             <InputField label="First Name" name="first_name" value={formData.first_name} onChange={handleChange} />
             <InputField label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} />
             <InputField label="Username" name="username" value={formData.username} onChange={handleChange} />
-            <InputField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
-            <InputField label="Password" name="password" type="password" value={formData.password} onChange={handleChange} />
-            <InputField label="Confirm Password" name="confirm_password" type="password" value={formData.confirm_password} onChange={handleChange} />
+            <InputField label="Email" type="email" name="email" value={formData.email} onChange={handleChange} />
+            <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleChange} />
+            <InputField label="Confirm Password" type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} />
 
             {/* Country */}
             <div>
@@ -167,7 +153,7 @@ const RegistrationForm = () => {
 
             {/* Promotion Methods */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-blue-night mb-1">How do you plan to promote our services?</label>
+              <label className="block text-sm font-medium text-blue-night mb-1">Promotion Methods</label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {["Blog", "Social Media", "Email Marketing", "YouTube", "Referral", "Other"].map((method) => (
                   <label key={method} className="flex items-center space-x-2">
@@ -183,7 +169,7 @@ const RegistrationForm = () => {
               </div>
             </div>
 
-            {/* Role */}
+            {/* Role Selector */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-blue-night mb-1">Register as:</label>
               <select name="role" value={formData.role} onChange={handleChange} className="w-full border rounded px-3 py-2">
@@ -192,7 +178,7 @@ const RegistrationForm = () => {
               </select>
               <p className="text-sm text-gray-500 mt-1">
                 <strong>Affiliate:</strong> Promote products and earn commission.<br />
-                <strong>Vendor:</strong> Upload products.
+                <strong>Vendor:</strong> Upload products to sell.
               </p>
             </div>
 
@@ -211,7 +197,7 @@ const RegistrationForm = () => {
               </label>
             </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <div className="md:col-span-2">
               <button
                 type="submit"
@@ -230,7 +216,6 @@ const RegistrationForm = () => {
   );
 };
 
-// Reusable input field component
 const InputField = ({ label, name, value, onChange, type = "text" }) => (
   <div>
     <label className="block text-sm font-medium text-blue-night mb-1">{label}</label>
